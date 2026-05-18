@@ -52,7 +52,10 @@ class BookmarksService {
     const result = await pool.query(
       `SELECT b.*, j.title AS job_title, j.location AS job_location, j.job_type AS job_type,
               j.status AS job_status, j.salary_min, j.salary_max,
-              c.name AS company_name
+              j.description AS job_description, j.requirements AS job_requirements,
+              j.location_type, j.experience_level,
+              c.id AS company_id, c.name AS company_name, c.location AS company_location,
+              c.industry AS company_industry
        FROM bookmarks b
        LEFT JOIN jobs j ON b.job_id = j.id
        LEFT JOIN companies c ON j.company_id = c.id

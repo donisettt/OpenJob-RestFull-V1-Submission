@@ -21,7 +21,7 @@ const fileFilter = (_req, file, cb) => {
   if (documentMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new ClientError('Invalid file type. Only PDF, DOC, DOCX, JPG, PNG allowed'), false);
+    cb(new ClientError('File is required and must be a PDF document'), false);
   }
 };
 

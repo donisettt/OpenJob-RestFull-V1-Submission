@@ -21,7 +21,9 @@ class CategoriesService {
   }
 
   async getAllCategories() {
-    const result = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+    const result = await pool.query(
+      'SELECT id, name, description, created_at FROM categories ORDER BY name ASC'
+    );
     return result.rows;
   }
 

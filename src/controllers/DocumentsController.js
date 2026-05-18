@@ -5,7 +5,7 @@ class DocumentsController {
   async uploadDocument(req, res, next) {
     try {
       if (!req.file) {
-        throw new ClientError('No file uploaded. Use field name "document"');
+        throw new ClientError('File is required');
       }
       const { originalname, filename, path: filePath, size, mimetype } = req.file;
       const document = await DocumentsService.saveDocument({
@@ -19,7 +19,13 @@ class DocumentsController {
       return res.status(201).json({
         status: 'success',
         message: 'Document uploaded successfully',
-        data: { id: document.id, documentId: document.id },
+        data: {
+          id: document.id,
+          documentId: document.id,
+          filename: document.filename,
+          originalName: document.original_name,
+          size: document.file_size,
+        },
       });
     } catch (error) {
       next(error);
@@ -41,10 +47,11 @@ class DocumentsController {
   async getDocumentById(req, res, next) {
     try {
       const document = await DocumentsService.getDocumentById(req.params.id);
-      return res.status(200).json({
-        status: 'success',
-        data: document,
-      });
+      return res
+        .status(200)
+        .type('application/pdf')
+        .set('Content-Disposition', `inline; filename="${document.original_name}"`)
+        .sendFile(DocumentsService.getDocumentAbsolutePath(document));
     } catch (error) {
       next(error);
     }

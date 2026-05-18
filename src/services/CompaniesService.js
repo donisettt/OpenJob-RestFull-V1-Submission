@@ -25,7 +25,8 @@ class CompaniesService {
 
   async getAllCompanies() {
     const result = await pool.query(
-      'SELECT * FROM companies ORDER BY created_at DESC'
+      `SELECT id, name, location, description, created_at, updated_at
+       FROM companies ORDER BY created_at DESC`
     );
     return result.rows;
   }

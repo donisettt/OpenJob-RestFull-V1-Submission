@@ -38,6 +38,10 @@ class DocumentsService {
     return result.rows[0];
   }
 
+  getDocumentAbsolutePath(document) {
+    return path.resolve(document.file_path);
+  }
+
   async deleteDocument(id, userId) {
     const doc = await this.getDocumentById(id);
     if (doc.user_id !== userId) {

@@ -1,4 +1,5 @@
 const UsersService = require('../services/UsersService');
+const CacheService = require('../services/CacheService');
 
 class UsersController {
   async register(req, res, next) {
@@ -18,11 +19,27 @@ class UsersController {
   async getUserById(req, res, next) {
     try {
       const { id } = req.params;
+      const cacheKey = CacheService.keys.user(id);
+      const cachedUser = await CacheService.get(cacheKey);
+      if (cachedUser) {
+        return res
+          .set('X-Data-Source', 'cache')
+          .status(200)
+          .json({
+            status: 'success',
+            data: cachedUser,
+          });
+      }
+
       const user = await UsersService.getUserById(id);
-      return res.status(200).json({
-        status: 'success',
-        data: user,
-      });
+      await CacheService.set(cacheKey, user);
+      return res
+        .set('X-Data-Source', 'database')
+        .status(200)
+        .json({
+          status: 'success',
+          data: user,
+        });
     } catch (error) {
       next(error);
     }

@@ -17,8 +17,10 @@ class JobsService {
 
   async getAllJobs({ title, 'company-name': companyName } = {}) {
     let query = `
-      SELECT j.*, c.name AS company_name, c.location AS company_location, c.industry,
-             cat.name AS category_name
+      SELECT j.id, j.company_id, j.category_id, j.title, j.description,
+             j.job_type, j.experience_level, j.location_type, j.status,
+             j.created_at, j.updated_at,
+             c.name AS company_name, cat.name AS category_name
       FROM jobs j
       LEFT JOIN companies c ON j.company_id = c.id
       LEFT JOIN categories cat ON j.category_id = cat.id
